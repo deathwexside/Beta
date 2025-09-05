@@ -8,7 +8,7 @@
           margin: 0;
           padding: 0;
           box-sizing: border-box;
-          font-family: 'Segoe UI', sans-serif;
+          font-family: 'Consolas', monospace;
         }
 
         body {
@@ -64,17 +64,72 @@
           opacity: 0;
           z-index: 9;
           transition: opacity 0.6s ease;
+          font-size: 1.2rem;
         }
 
-        #loading p {
-          font-size: 1.5rem;
-          color: #00f6ff;
-          animation: blink 1.5s infinite;
+        .task {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          width: 300px;
+          margin: 12px 0;
         }
 
-        @keyframes blink {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.3; }
+        .task-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .spinner {
+          border: 3px solid rgba(255, 255, 255, 0.2);
+          border-top: 3px solid #00f6ff;
+          border-radius: 50%;
+          width: 18px;
+          height: 18px;
+          animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        .check {
+          color: #00ff88;
+          font-size: 1.4rem;
+          display: none;
+          opacity: 0;
+          transition: opacity 0.5s ease;
+        }
+
+        .dots::after {
+          content: "";
+          animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+          0% { content: "."; }
+          33% { content: ".."; }
+          66% { content: "..."; }
+          100% { content: "."; }
+        }
+
+        .progress {
+          width: 100%;
+          height: 5px;
+          background: rgba(255,255,255,0.1);
+          margin-top: 6px;
+          border-radius: 3px;
+          overflow: hidden;
+        }
+
+        .bar {
+          height: 100%;
+          width: 0;
+          background: linear-gradient(90deg, #00f6ff, #7c3aed);
+          border-radius: 3px;
+          transition: width 0.3s linear;
         }
 
         /* Основная страница */
@@ -134,61 +189,41 @@
           height: 24px;
           fill: white;
         }
-
-        /* Неоновые линии */
-        .line {
-          position: absolute;
-          width: 2px;
-          height: 120vh;
-          background: linear-gradient(180deg, transparent, #00f6ff, transparent);
-          opacity: 0.5;
-          animation: move 6s linear infinite;
-        }
-
-        .line:nth-child(1) { left: 20%; animation-delay: 0s; }
-        .line:nth-child(2) { left: 40%; animation-delay: 2s; }
-        .line:nth-child(3) { left: 60%; animation-delay: 4s; }
-        .line:nth-child(4) { left: 80%; animation-delay: 1s; }
-
-        @keyframes move {
-          from { transform: translateY(-100%); }
-          to { transform: translateY(100%); }
-        }
-
-        /* Частицы */
-        .particle {
-          position: absolute;
-          width: 4px;
-          height: 4px;
-          background: #00f6ff;
-          border-radius: 50%;
-          opacity: 0.7;
-          animation: float 8s linear infinite;
-        }
-
-        @keyframes float {
-          from { transform: translateY(100vh) scale(0.5); opacity: 0; }
-          20% { opacity: 1; }
-          to { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-        }
     </style>
 </head>
 <body>
 <!-- Заставка -->
 <div id="intro">
-    <button onclick="startLoading()">ВПЕРЁД</button>
+    <button onclick="startSequence()">ВПЕРЁД</button>
 </div>
 
-<!-- Фейк загрузка -->
+<!-- Фейковая загрузка -->
 <div id="loading">
-    <p>Загрузка данных...</p>
+    <div class="task" id="task1">
+        <div class="task-row">
+            <div class="spinner"></div>
+            <span class="dots">Загрузка данных</span>
+            <span class="check">✔</span>
+        </div>
+        <div class="progress"><div class="bar"></div></div>
+    </div>
+    <div class="task" id="task2">
+        <div class="task-row">
+            <div class="spinner"></div>
+            <span class="dots">Проверяем соединение</span>
+            <span class="check">✔</span>
+        </div>
+        <div class="progress"><div class="bar"></div></div>
+    </div>
+    <div class="task" id="task3">
+        <div class="task-row">
+            <div class="spinner"></div>
+            <span class="dots">Кража ваших данных</span>
+            <span class="check">✔</span>
+        </div>
+        <div class="progress"><div class="bar"></div></div>
+    </div>
 </div>
-
-<!-- Анимированные линии -->
-<div class="line"></div>
-<div class="line"></div>
-<div class="line"></div>
-<div class="line"></div>
 
 <!-- Основная часть -->
 <div id="main">
@@ -205,13 +240,59 @@
 </div>
 
 <script>
-    function startLoading() {
+    function startSequence() {
       document.getElementById("intro").style.opacity = "0";
       setTimeout(() => {
         document.getElementById("intro").style.display = "none";
         let loading = document.getElementById("loading");
         loading.style.opacity = "1";
-        // имитация загрузки 2.5 сек
+
+        const tasks = [
+          { id: "task1", text: "Загрузка данных" },
+          { id: "task2", text: "Проверяем соединение" },
+          { id: "task3", text: "Кража ваших данных" }
+        ];
+
+        let totalDelay = 0;
+
+        tasks.forEach((taskData) => {
+          const task = document.getElementById(taskData.id);
+          const bar = task.querySelector(".bar");
+          const spinner = task.querySelector(".spinner");
+          const text = task.querySelector(".dots");
+          const check = task.querySelector(".check");
+
+          let duration = 1500 + Math.random() * 1500;
+
+          setTimeout(() => {
+            // анимация прогресса
+            let progress = 0;
+            const interval = setInterval(() => {
+              progress += 5;
+              if (progress > 100) progress = 100;
+              bar.style.width = progress + "%";
+            }, duration / 20);
+
+            setTimeout(() => {
+              clearInterval(interval);
+              spinner.style.display = "none";
+              bar.style.width = "0";
+              task.querySelector(".progress").style.display = "none";
+
+              // убираем анимацию точек → оставляем обычный текст
+              text.classList.remove("dots");
+              text.textContent = taskData.text;
+
+              // показываем галочку
+              check.style.display = "inline";
+              setTimeout(() => check.style.opacity = "1", 50);
+            }, duration);
+          }, totalDelay);
+
+          totalDelay += duration + 800;
+        });
+
+        // показать сайт после завершения всех шагов
         setTimeout(() => {
           loading.style.opacity = "0";
           setTimeout(() => {
@@ -220,18 +301,9 @@
             main.style.opacity = "1";
             main.style.transform = "translateY(0)";
           }, 600);
-        }, 2500);
-      }, 1000);
+        }, totalDelay + 500);
 
-      // частицы
-      for (let i = 0; i < 40; i++) {
-        let particle = document.createElement("div");
-        particle.className = "particle";
-        document.body.appendChild(particle);
-        particle.style.left = Math.random() * 100 + "vw";
-        particle.style.animationDuration = (4 + Math.random() * 6) + "s";
-        particle.style.animationDelay = Math.random() * 5 + "s";
-      }
+      }, 800);
     }
 </script>
 </body>
