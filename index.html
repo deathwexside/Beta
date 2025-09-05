@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Kioshikins Appreciation</title>
+    <style>
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+          height: 100vh;
+          background: radial-gradient(circle at top, #0a0f1f, #000);
+          overflow: hidden;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #fff;
+        }
+
+        /* Экран-заставка */
+        #intro {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, #020611, #0b0f1f);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          z-index: 10;
+          transition: opacity 1s ease;
+        }
+
+        #intro button {
+          padding: 1rem 2.5rem;
+          background: linear-gradient(90deg, #00f6ff, #7c3aed);
+          border: 2px solid black;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 1.3rem;
+          font-weight: bold;
+          cursor: pointer;
+          box-shadow: 0 0 15px #00f6ff80;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #intro button:hover {
+          transform: scale(1.08);
+          box-shadow: 0 0 25px #00f6ffcc;
+        }
+
+        /* Экран загрузки */
+        #loading {
+          position: absolute;
+          inset: 0;
+          background: #000d1a;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          flex-direction: column;
+          opacity: 0;
+          z-index: 9;
+          transition: opacity 0.6s ease;
+        }
+
+        #loading p {
+          font-size: 1.5rem;
+          color: #00f6ff;
+          animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+
+        /* Основная страница */
+        #main {
+          opacity: 0;
+          transform: translateY(50px);
+          transition: all 1.2s ease;
+          text-align: center;
+          padding: 20px;
+          z-index: 1;
+        }
+
+        #main h1 {
+          font-size: 3rem;
+          background: linear-gradient(90deg, #00f6ff, #7c3aed);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          margin-bottom: 1rem;
+          animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        #main p {
+          font-size: 1.5rem;
+          color: #b3b3cc;
+          max-width: 700px;
+          margin: 0 auto 2rem auto;
+          line-height: 1.6;
+        }
+
+        @keyframes glow {
+          from { text-shadow: 0 0 10px #00f6ff; }
+          to { text-shadow: 0 0 25px #7c3aed; }
+        }
+
+        /* Twitch кнопка */
+        .twitch-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 0.8rem 1.5rem;
+          background: #9146ff;
+          color: white;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: bold;
+          transition: transform 0.2s, box-shadow 0.2s;
+          box-shadow: 0 0 15px #9146ff80;
+        }
+
+        .twitch-btn:hover {
+          transform: scale(1.05);
+          box-shadow: 0 0 25px #9146ffcc;
+        }
+
+        .twitch-btn svg {
+          width: 24px;
+          height: 24px;
+          fill: white;
+        }
+
+        /* Неоновые линии */
+        .line {
+          position: absolute;
+          width: 2px;
+          height: 120vh;
+          background: linear-gradient(180deg, transparent, #00f6ff, transparent);
+          opacity: 0.5;
+          animation: move 6s linear infinite;
+        }
+
+        .line:nth-child(1) { left: 20%; animation-delay: 0s; }
+        .line:nth-child(2) { left: 40%; animation-delay: 2s; }
+        .line:nth-child(3) { left: 60%; animation-delay: 4s; }
+        .line:nth-child(4) { left: 80%; animation-delay: 1s; }
+
+        @keyframes move {
+          from { transform: translateY(-100%); }
+          to { transform: translateY(100%); }
+        }
+
+        /* Частицы */
+        .particle {
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          background: #00f6ff;
+          border-radius: 50%;
+          opacity: 0.7;
+          animation: float 8s linear infinite;
+        }
+
+        @keyframes float {
+          from { transform: translateY(100vh) scale(0.5); opacity: 0; }
+          20% { opacity: 1; }
+          to { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+<!-- Заставка -->
+<div id="intro">
+    <button onclick="startLoading()">ВПЕРЁД</button>
+</div>
+
+<!-- Фейк загрузка -->
+<div id="loading">
+    <p>Загрузка данных...</p>
+</div>
+
+<!-- Анимированные линии -->
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+
+<!-- Основная часть -->
+<div id="main">
+    <h1>Спасибо, kioshikins 💜</h1>
+    <p>
+        Спасибо за тёплые стримы, атмосферу и общение.
+        Ты делаешь вечера уютнее и веселее, а разговоры с тобой — это как настоящий буст настроения.
+        Оставайся такой же прекрасной 💫
+    </p>
+    <a href="https://www.twitch.tv/kioshikins" target="_blank" class="twitch-btn">
+        <svg viewBox="0 0 24 24"><path d="M4.265 0L1 4.235v15.529h6.353V24h3.176l3.176-4.235h4.235L23 12.706V0H4.265zm17.294 11.294l-3.176 3.176h-4.235l-3.176 4.235v-4.235H7.353V1.412h14.206v9.882zM18.882 4.235h-1.412v4.235h1.412V4.235zm-4.706 0h-1.412v4.235h1.412V4.235z"/></svg>
+        Twitch
+    </a>
+</div>
+
+<script>
+    function startLoading() {
+      document.getElementById("intro").style.opacity = "0";
+      setTimeout(() => {
+        document.getElementById("intro").style.display = "none";
+        let loading = document.getElementById("loading");
+        loading.style.opacity = "1";
+        // имитация загрузки 2.5 сек
+        setTimeout(() => {
+          loading.style.opacity = "0";
+          setTimeout(() => {
+            loading.style.display = "none";
+            let main = document.getElementById("main");
+            main.style.opacity = "1";
+            main.style.transform = "translateY(0)";
+          }, 600);
+        }, 2500);
+      }, 1000);
+
+      // частицы
+      for (let i = 0; i < 40; i++) {
+        let particle = document.createElement("div");
+        particle.className = "particle";
+        document.body.appendChild(particle);
+        particle.style.left = Math.random() * 100 + "vw";
+        particle.style.animationDuration = (4 + Math.random() * 6) + "s";
+        particle.style.animationDelay = Math.random() * 5 + "s";
+      }
+    }
+</script>
+</body>
+</html>
