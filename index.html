@@ -4,194 +4,119 @@
     <meta charset="UTF-8">
     <title>Kioshikins Appreciation</title>
     <style>
-        * {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: 'Consolas', monospace;
-        }
-
+        * {margin:0; padding:0; box-sizing:border-box; font-family:'Consolas', monospace;}
         body {
-          height: 100vh;
-          background: radial-gradient(circle at top, #0a0f1f, #000);
-          overflow: hidden;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: #fff;
+            height:100vh;
+            background: radial-gradient(circle at top, #0a0f1f, #000);
+            overflow:hidden;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            color:#fff;
+            position: relative;
         }
 
-        /* Экран-заставка */
+        /* Анимация фона (частицы) */
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #00f6ff;
+            border-radius: 50%;
+            opacity: 0.7;
+            animation: float 10s linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(100vh) translateX(0) scale(0.5); opacity:0.5; }
+            50% { opacity:1; }
+            100% { transform: translateY(-50vh) translateX(100vw) scale(1); opacity:0; }
+        }
+
+        /* Заставка */
         #intro {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, #020611, #0b0f1f);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          z-index: 10;
-          transition: opacity 1s ease;
+            position:absolute; inset:0;
+            background: linear-gradient(135deg, #020611, #0b0f1f);
+            display:flex; justify-content:center; align-items:center; flex-direction:column;
+            z-index:10; transition: opacity 1s ease;
         }
-
         #intro button {
-          padding: 1rem 2.5rem;
-          background: linear-gradient(90deg, #00f6ff, #7c3aed);
-          border: 2px solid black;
-          border-radius: 8px;
-          color: #fff;
-          font-size: 1.3rem;
-          font-weight: bold;
-          cursor: pointer;
-          box-shadow: 0 0 15px #00f6ff80;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(90deg, #00f6ff, #7c3aed);
+            border: 2px solid black;
+            border-radius: 8px;
+            color:#fff;
+            font-size:1.3rem;
+            font-weight:bold;
+            cursor:pointer;
+            box-shadow:0 0 15px #00f6ff80;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
         #intro button:hover {
-          transform: scale(1.08);
-          box-shadow: 0 0 25px #00f6ffcc;
+            transform: scale(1.08);
+            box-shadow:0 0 25px #00f6ffcc;
         }
 
-        /* Экран загрузки */
-        #loading {
-          position: absolute;
-          inset: 0;
-          background: #000d1a;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-direction: column;
-          opacity: 0;
-          z-index: 9;
-          transition: opacity 0.6s ease;
-          font-size: 1.2rem;
+        /* Фейковая загрузка */
+        #loading, #fake-data {
+            position:absolute; inset:0;
+            background:#000d1a;
+            display:flex; justify-content:center; align-items:center; flex-direction:column;
+            opacity:0; z-index:9;
+            transition: opacity 0.6s ease;
+            font-size:1.2rem;
+            text-align:center;
         }
-
-        .task {
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-          width: 300px;
-          margin: 12px 0;
-        }
-
-        .task-row {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-
+        .task { display:flex; flex-direction:column; align-items:flex-start; width:300px; margin:12px 0; }
+        .task-row { display:flex; align-items:center; gap:10px; }
         .spinner {
-          border: 3px solid rgba(255, 255, 255, 0.2);
-          border-top: 3px solid #00f6ff;
-          border-radius: 50%;
-          width: 18px;
-          height: 18px;
-          animation: spin 1s linear infinite;
+            border:3px solid rgba(255,255,255,0.2);
+            border-top:3px solid #00f6ff;
+            border-radius:50%;
+            width:18px; height:18px;
+            animation: spin 1s linear infinite;
         }
+        @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+        .check { color:#00ff88; font-size:1.4rem; display:none; opacity:0; transition:opacity 0.5s ease; }
+        .dots::after { content:""; animation:dots 1.5s infinite; }
+        @keyframes dots {0%{content:".";}33%{content:"..";}66%{content:"...";}100%{content:".";}}
+        .progress { width:100%; height:5px; background:rgba(255,255,255,0.1); margin-top:6px; border-radius:3px; overflow:hidden; }
+        .bar { height:100%; width:0; background: linear-gradient(90deg,#00f6ff,#7c3aed); border-radius:3px; transition:width 0.3s linear; }
 
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-
-        .check {
-          color: #00ff88;
-          font-size: 1.4rem;
-          display: none;
-          opacity: 0;
-          transition: opacity 0.5s ease;
-        }
-
-        .dots::after {
-          content: "";
-          animation: dots 1.5s infinite;
-        }
-
-        @keyframes dots {
-          0% { content: "."; }
-          33% { content: ".."; }
-          66% { content: "..."; }
-          100% { content: "."; }
-        }
-
-        .progress {
-          width: 100%;
-          height: 5px;
-          background: rgba(255,255,255,0.1);
-          margin-top: 6px;
-          border-radius: 3px;
-          overflow: hidden;
-        }
-
-        .bar {
-          height: 100%;
-          width: 0;
-          background: linear-gradient(90deg, #00f6ff, #7c3aed);
-          border-radius: 3px;
-          transition: width 0.3s linear;
-        }
+        /* Фейк данные */
+        #fake-data ul { list-style:none; margin-top:1rem; font-size:1.2rem; }
+        #fake-data li { margin:6px 0; }
 
         /* Основная страница */
-        #main {
-          opacity: 0;
-          transform: translateY(50px);
-          transition: all 1.2s ease;
-          text-align: center;
-          padding: 20px;
-          z-index: 1;
-        }
-
+        #main { opacity:0; transform:translateY(50px); transition: all 1.2s ease; text-align:center; padding:20px; z-index:1;}
         #main h1 {
-          font-size: 3rem;
-          background: linear-gradient(90deg, #00f6ff, #7c3aed);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          margin-bottom: 1rem;
-          animation: glow 3s ease-in-out infinite alternate;
+            font-size:3rem;
+            background: linear-gradient(90deg,#00f6ff,#7c3aed);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            margin-bottom:1rem;
+            animation: glow 3s ease-in-out infinite alternate;
         }
+        #main p { font-size:1.5rem; color:#b3b3cc; max-width:700px; margin:0 auto 2rem auto; line-height:1.6; }
+        @keyframes glow { from{ text-shadow:0 0 10px #00f6ff; } to{ text-shadow:0 0 25px #7c3aed; } }
 
-        #main p {
-          font-size: 1.5rem;
-          color: #b3b3cc;
-          max-width: 700px;
-          margin: 0 auto 2rem auto;
-          line-height: 1.6;
-        }
-
-        @keyframes glow {
-          from { text-shadow: 0 0 10px #00f6ff; }
-          to { text-shadow: 0 0 25px #7c3aed; }
-        }
-
-        /* Twitch кнопка */
-        .twitch-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 10px;
-          padding: 0.8rem 1.5rem;
-          background: #9146ff;
-          color: white;
-          text-decoration: none;
-          border-radius: 8px;
-          font-weight: bold;
-          transition: transform 0.2s, box-shadow 0.2s;
-          box-shadow: 0 0 15px #9146ff80;
-        }
-
-        .twitch-btn:hover {
-          transform: scale(1.05);
-          box-shadow: 0 0 25px #9146ffcc;
-        }
-
-        .twitch-btn svg {
-          width: 24px;
-          height: 24px;
-          fill: white;
-        }
+        .twitch-btn { display:inline-flex; align-items:center; gap:10px; padding:0.8rem 1.5rem; background:#9146ff; color:white; text-decoration:none; border-radius:8px; font-weight:bold; transition:transform 0.2s, box-shadow 0.2s; box-shadow:0 0 15px #9146ff80; }
+        .twitch-btn:hover { transform: scale(1.05); box-shadow:0 0 25px #9146ffcc; }
+        .twitch-btn svg { width:24px; height:24px; fill:white; }
     </style>
 </head>
 <body>
+
+<!-- Частицы -->
+<script>
+    for(let i=0;i<50;i++){
+        let p=document.createElement('div');
+        p.className='particle';
+        p.style.left=Math.random()*100+'vw';
+        p.style.width=p.style.height= (2+Math.random()*4)+'px';
+        p.style.animationDuration= (8+Math.random()*5)+'s';
+        document.body.appendChild(p);
+    }
+</script>
+
 <!-- Заставка -->
 <div id="intro">
     <button onclick="startSequence()">ВПЕРЁД</button>
@@ -218,11 +143,23 @@
     <div class="task" id="task3">
         <div class="task-row">
             <div class="spinner"></div>
-            <span class="dots">Кража ваших данных</span>
+            <span class="dots">Настройка атмосферы</span>
             <span class="check">✔</span>
         </div>
         <div class="progress"><div class="bar"></div></div>
     </div>
+</div>
+
+<!-- Фейк данные -->
+<div id="fake-data">
+    <h2>Ваши данные отправлены на аккаунт devarov:</h2>
+    <ul>
+        <li>Местоположение</li>
+        <li>Адрес</li>
+        <li>Номер телефона</li>
+        <li>ID устройства</li>
+        <li>Фотография с фронтальной камеры</li>
+    </ul>
 </div>
 
 <!-- Основная часть -->
@@ -240,70 +177,75 @@
 </div>
 
 <script>
-    function startSequence() {
-      document.getElementById("intro").style.opacity = "0";
-      setTimeout(() => {
-        document.getElementById("intro").style.display = "none";
-        let loading = document.getElementById("loading");
-        loading.style.opacity = "1";
+    function startSequence(){
+        document.getElementById("intro").style.opacity="0";
+        setTimeout(()=>{
+            document.getElementById("intro").style.display="none";
+            let loading = document.getElementById("loading");
+            loading.style.opacity="1";
 
-        const tasks = [
-          { id: "task1", text: "Загрузка данных" },
-          { id: "task2", text: "Проверяем соединение" },
-          { id: "task3", text: "Кража ваших данных" }
-        ];
+            const tasks = [
+                {id:"task1", text:"Загрузка данных"},
+                {id:"task2", text:"Проверяем соединение"},
+                {id:"task3", text:"Настройка атмосферы"}
+            ];
 
-        let totalDelay = 0;
+            let totalDelay=0;
 
-        tasks.forEach((taskData) => {
-          const task = document.getElementById(taskData.id);
-          const bar = task.querySelector(".bar");
-          const spinner = task.querySelector(".spinner");
-          const text = task.querySelector(".dots");
-          const check = task.querySelector(".check");
+            tasks.forEach(taskData=>{
+                const task=document.getElementById(taskData.id);
+                const bar=task.querySelector(".bar");
+                const spinner=task.querySelector(".spinner");
+                const text=task.querySelector(".dots");
+                const check=task.querySelector(".check");
+                let duration=1500 + Math.random()*1500;
 
-          let duration = 1500 + Math.random() * 1500;
+                setTimeout(()=>{
+                    let progress=0;
+                    const interval=setInterval(()=>{
+                        progress+=5;
+                        if(progress>100)progress=100;
+                        bar.style.width=progress+"%";
+                    }, duration/20);
 
-          setTimeout(() => {
-            // анимация прогресса
-            let progress = 0;
-            const interval = setInterval(() => {
-              progress += 5;
-              if (progress > 100) progress = 100;
-              bar.style.width = progress + "%";
-            }, duration / 20);
+                    setTimeout(()=>{
+                        clearInterval(interval);
+                        spinner.style.display="none";
+                        bar.style.width="0";
+                        task.querySelector(".progress").style.display="none";
+                        text.classList.remove("dots");
+                        text.textContent=taskData.text;
+                        check.style.display="inline";
+                        setTimeout(()=>check.style.opacity="1",50);
+                    }, duration);
+                }, totalDelay);
 
-            setTimeout(() => {
-              clearInterval(interval);
-              spinner.style.display = "none";
-              bar.style.width = "0";
-              task.querySelector(".progress").style.display = "none";
+                totalDelay+=duration+800;
+            });
 
-              // убираем анимацию точек → оставляем обычный текст
-              text.classList.remove("dots");
-              text.textContent = taskData.text;
+            // После загрузки показываем фейк данные
+            setTimeout(()=>{
+                loading.style.opacity="0";
+                setTimeout(()=>{
+                    loading.style.display="none";
+                    let fake = document.getElementById("fake-data");
+                    fake.style.opacity="1";
 
-              // показываем галочку
-              check.style.display = "inline";
-              setTimeout(() => check.style.opacity = "1", 50);
-            }, duration);
-          }, totalDelay);
+                    // Через 10 секунд скрыть фейк и показать main
+                    setTimeout(()=>{
+                        fake.style.opacity="0";
+                        setTimeout(()=>{
+                            fake.style.display="none";
+                            let main=document.getElementById("main");
+                            main.style.opacity="1";
+                            main.style.transform="translateY(0)";
+                        },600);
+                    },10000);
 
-          totalDelay += duration + 800;
-        });
+                },600);
+            }, totalDelay+500);
 
-        // показать сайт после завершения всех шагов
-        setTimeout(() => {
-          loading.style.opacity = "0";
-          setTimeout(() => {
-            loading.style.display = "none";
-            let main = document.getElementById("main");
-            main.style.opacity = "1";
-            main.style.transform = "translateY(0)";
-          }, 600);
-        }, totalDelay + 500);
-
-      }, 800);
+        },800);
     }
 </script>
 </body>
